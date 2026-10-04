@@ -1,3 +1,6 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace api_stockci.Models;
 
 public enum UserRole
@@ -9,11 +12,13 @@ public enum UserRole
 
 public class User
 {
-    public int Id { get; set; }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
     public string Username { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
+    [BsonRepresentation(BsonType.String)]
     public UserRole Role { get; set; } = UserRole.Employee;
-    public List<StockMovement> StockMovements { get; set; } = new();
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
