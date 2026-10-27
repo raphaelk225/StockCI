@@ -32,7 +32,9 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Create(Product product)
     {
-        await _productService.CreateAsync(product);
+        var result = await _productService.CreateAsync(product);
+        if (result == ProductResult.CategoryNotFound)
+            return NotFound(new { message = "Catégorie introuvable." });
         return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
     }
 
@@ -41,7 +43,10 @@ public class ProductsController : ControllerBase
     {
         var existing = await _productService.GetByIdAsync(id);
         if (existing is null) return NotFound();
-        await _productService.UpdateAsync(id, product);
+
+        var result = await _productService.UpdateAsync(id, product);
+        if (result == ProductResult.CategoryNotFound)
+            return NotFound(new { message = "Catégorie introuvable." });
         return NoContent();
     }
 
